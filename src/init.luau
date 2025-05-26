@@ -4,19 +4,17 @@ local QuebecInstance = require(script.core.QuebecInstance)
 
 local configurationTypes = script.types["config.d"]
 
-local function loadConfiguration(): configurationTypes.TConfiguration
-	if script.FindFirstChild("config") then
-		return require(script.FindFirstChild("config"))
+local function loadConfiguration(path: ModuleScript?): configurationTypes.TConfiguration
+	if path then
+		return require(path)
 	else
-		return {
-			enabledModules = {},
-		}
+		return require(script.config)
 	end
 end
 
-return function()
-	local config = loadConfiguration()
-	local instance = QuebecInstance.new(config)
+return function(callingScript: BaseScript, configPath: ModuleScript?)
+	local config = loadConfiguration(configPath)
+	local instance = QuebecInstance.new(callingScript, config)
 
 	instance:bootstrap()
 

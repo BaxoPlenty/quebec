@@ -1,6 +1,6 @@
 local configurationTypes = script.Parent.types["config.d"]
 
-local configuration: configurationTypes.TConfiguration = {
+local defaultConfiguration: configurationTypes.TConfiguration = {
 	--[[ - START OF CONFIG - ]]
 
 	enabledModules = {},
@@ -8,4 +8,4 @@ local configuration: configurationTypes.TConfiguration = {
 	--[[ - END OF CONFIG - ]]
 }
 
-return configuration
+return defaultConfiguration
