@@ -1,12 +1,6 @@
 {
-    "name": "quebec",
+    "name": "Quebec",
     "tree": {
-        "$className": "DataModel",
-
-        "ReplicatedStorage": {
-            "Quebec": {
-                "$path": "src/"
-            }
-        }
+        "$path": "./src/"
     }
 }
