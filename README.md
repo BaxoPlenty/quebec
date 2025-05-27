@@ -42,7 +42,7 @@ In the `init.lua` file, you simply load the Quebec module, and it will handle th
 ```lua
 -- init.lua
 
-require("path_to_quebec")()
+require("path_to_quebec")(script --[[ , optional_path_to_config ]])
 ```
 
 You can load the same Quebec module on both client and server. It will automatically determine the environment which it's running in.
