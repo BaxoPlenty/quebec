@@ -37,7 +37,7 @@ A default project would look like this:
         -   controller_two.lua
     -   init.client.lua
 
-In the `init.lua` file, you simply load the Quebec module, and it will handle the rest:
+In the `init.*.lua` file, you simply load the Quebec module, and it will handle the rest:
 
 ```lua
 -- init.lua
