@@ -40,7 +40,7 @@ A default project would look like this:
 In the `init.*.lua` file, you simply load the Quebec module, and it will handle the rest:
 
 ```lua
--- init.lua
+-- init.*.lua
 
 require("path_to_quebec")(script --[[ , optional_path_to_config ]])
 ```
