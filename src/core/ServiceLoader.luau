@@ -1,8 +1,10 @@
+local quebecTypes = script.Parent.Parent.core.QuebecInstance
 local loaderTypes = script.Parent.Parent.types["loader.d"]
 local serviceTypes = script.Parent.Parent.types["service.d"]
 
 export type TServiceLoader = loaderTypes.TLoader & {
 	folder: Folder,
+    instance: quebecTypes.TQuebecInstance
 }
 
 local logger = require(script.Parent.Parent.internal.logger)
@@ -10,9 +12,10 @@ local logger = require(script.Parent.Parent.internal.logger)
 local ServiceLoader: TServiceLoader = {}
 ServiceLoader.__index = ServiceLoader
 
-function ServiceLoader.new(folder)
+function ServiceLoader.new(instance, folder)
 	local self = setmetatable({}, ServiceLoader)
 
+    self.instance = instance
 	self.folder = folder
 
 	return self
@@ -28,10 +31,14 @@ function ServiceLoader:load()
 
 		local module = require(instance) :: serviceTypes.TService
 
+        if module.dependencies then
+            for _, dependencyName in next, module.dependencies do
+                module[dependencyName] = self.instance.loadedModules[dependencyName]
+            end
+        end
+
 		if module.onStart then
-			task.spawn(function()
-				module:onStart()
-			end)
+			task.spawn(module.onStart, module)
 		end
 	end
 end

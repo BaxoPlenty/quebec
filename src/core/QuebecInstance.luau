@@ -3,11 +3,12 @@ local root = script.Parent.Parent
 
 local logger = require(root.internal.logger)
 local serviceLoader = require(root.core.ServiceLoader)
+local controllerLoader = require(root.core.ControllerLoader)
 
 local configurationTypes = root.types["config.d"]
 local loaderTypes = root.types["loader.d"]
 
-type TQuebecInstance = {
+export type TQuebecInstance = {
 	callingScript: BaseScript,
 	config: configurationTypes.TConfiguration,
 	loadedModules: table,
@@ -33,7 +34,13 @@ function QuebecInstance:loadNecessaryModules()
 		local module = script.Parent.Parent.modules:FindFirstChild(moduleName)
 
 		if module then
-			table.insert(self.loadedModules, require(module))
+			local requiredModule = require(module)
+
+			if requiredModule.setup then
+				requiredModule:setup()
+			end
+
+			self.loadedModules[moduleName] = requiredModule
 		else
 			logger:warn("QuebecInstance:loadNecessaryModules", "expected to find module named %q, got none", moduleName)
 		end
@@ -44,12 +51,12 @@ function QuebecInstance:bootstrap()
 	self:loadNecessaryModules()
 
 	if RunService:IsClient() then
-        self.loader = serviceLoader.new(self.callingScript:FindFirstChild("controllers"))
+		self.loader = controllerLoader.new(self.callingScript:FindFirstChild("controllers"))
 	else
-		self.loader = serviceLoader.new(self.callingScript:FindFirstChild("services"))
+		self.loader = serviceLoader.new(self, self.callingScript:FindFirstChild("services"))
 	end
 
-    self.loader:load()
+	self.loader:load()
 end
 
 return QuebecInstance

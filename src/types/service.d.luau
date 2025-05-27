@@ -3,5 +3,5 @@ export type TService = {
 	identifier: string?,
 	dependencies: { [number | string]: string | ModuleScript }?,
 
-	onStart: (TService) -> nil?,
+	onStart: ((self: TService) -> nil)?,
 }
