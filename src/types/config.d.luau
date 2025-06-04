@@ -1,3 +1,3 @@
-export type TConfiguration = {
+export type FrameworkConfiguration = {
 	enabledModules: {},
 }

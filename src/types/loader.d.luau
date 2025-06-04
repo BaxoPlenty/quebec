@@ -1,3 +1,3 @@
-export type TLoader = {
-    load: (TLoader) -> nil,
+export type Loader = {
+    load: (Loader) -> nil,
 }

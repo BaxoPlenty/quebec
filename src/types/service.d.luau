@@ -1,7 +1,7 @@
-export type TService = {
+export type Service = {
 	data: any?,
 	identifier: string?,
 	dependencies: { [number | string]: string | ModuleScript }?,
 
-	onStart: ((self: TService) -> nil)?,
+	onStart: ((self: Service) -> nil)?,
 }
