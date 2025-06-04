@@ -1,3 +1,4 @@
 export type Loader = {
-    load: (Loader) -> nil,
+	load: (Loader) -> boolean,
+	run: (Loader) -> nil,
 }

@@ -1,4 +1,5 @@
 local RunService = game:GetService("RunService")
+
 local root = script.Parent.Parent
 
 local logger = require(root.internal.logger)
@@ -8,14 +9,14 @@ local controllerLoader = require(root.core.ControllerLoader)
 local configurationTypes = root.types["config.d"]
 local loaderTypes = root.types["loader.d"]
 
-export type TQuebecInstance = {
+export type QuebecInstance = {
 	callingScript: BaseScript,
 	config: configurationTypes.FrameworkConfiguration,
 	loadedModules: table,
 	loader: loaderTypes.Loader,
 }
 
-local QuebecInstance: TQuebecInstance = {}
+local QuebecInstance: QuebecInstance = {}
 
 QuebecInstance.__index = QuebecInstance
 
@@ -31,19 +32,7 @@ end
 
 function QuebecInstance:loadNecessaryModules()
 	for _, moduleName in next, self.config.enabledModules do
-		local module = script.Parent.Parent.modules:FindFirstChild(moduleName)
-
-		if module then
-			local requiredModule = require(module)
-
-			if requiredModule.setup then
-				requiredModule:setup()
-			end
-
-			self.loadedModules[moduleName] = requiredModule
-		else
-			logger:warn("QuebecInstance:loadNecessaryModules", "expected to find module named %q, got none", moduleName)
-		end
+		-- TODO: Implement this to work with namespaces aswell
 	end
 end
 
@@ -56,7 +45,15 @@ function QuebecInstance:bootstrap()
 		self.loader = serviceLoader.new(self, self.callingScript:FindFirstChild("services"))
 	end
 
-	self.loader:load()
+	if not self.loader:load() then
+		logger:criticalError(
+			"QuebecInstance:bootstrap",
+			"(%s) unable to load modules. check the logs for more information",
+			if RunService:IsClient() then "client" else "server"
+		)
+	end
+
+	self.loader:run()
 end
 
 return QuebecInstance
