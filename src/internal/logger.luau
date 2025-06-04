@@ -4,7 +4,7 @@ local Logger = {
 
 ---Logs debug information to the console.
 ---
----Note: this only works if `self.enableDebug` is true
+---Note: This only works if `self.enableDebug` is true
 function Logger:debug(where, fmt, ...)
 	if self.enableDebug then
 		print(`[ DBG @ {where} ] {string.format(fmt, ...)}`)
