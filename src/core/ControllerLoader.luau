@@ -1,7 +1,7 @@
 local loaderTypes = script.Parent.Parent.types["loader.d"]
 local controllerTypes = script.Parent.Parent.types["controller.d"]
 
-export type TControllerLoader = loaderTypes.TLoader & {
+export type TControllerLoader = loaderTypes.Loader & {
 	folder: Folder,
 }
 
@@ -26,7 +26,7 @@ function ControllerLoader:load()
 			continue
 		end
 
-		local module = require(instance) :: controllerTypes.TController
+		local module = require(instance) :: controllerTypes.Controller
 
 		if module.onStart then
 			task.spawn(function()

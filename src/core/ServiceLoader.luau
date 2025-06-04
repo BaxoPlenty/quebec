@@ -2,7 +2,7 @@ local quebecTypes = script.Parent.Parent.core.QuebecInstance
 local loaderTypes = script.Parent.Parent.types["loader.d"]
 local serviceTypes = script.Parent.Parent.types["service.d"]
 
-export type TServiceLoader = loaderTypes.TLoader & {
+export type TServiceLoader = loaderTypes.Loader & {
 	folder: Folder,
     instance: quebecTypes.TQuebecInstance
 }
@@ -29,7 +29,7 @@ function ServiceLoader:load()
 			continue
 		end
 
-		local module = require(instance) :: serviceTypes.TService
+		local module = require(instance) :: serviceTypes.Service
 
         if module.dependencies then
             for _, dependencyName in next, module.dependencies do

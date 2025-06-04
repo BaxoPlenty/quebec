@@ -7,7 +7,7 @@ local configurationTypes = script.types["config.d"]
 ---Loads the framework configuration from the provided ModuleScript
 ---
 ---Note: This function uses `require` to load the ModuleScript
-local function loadConfiguration(path: ModuleScript?): configurationTypes.TConfiguration
+local function loadConfiguration(path: ModuleScript?): configurationTypes.FrameworkConfiguration
 	if path then
 		return require(path)
 	else

@@ -10,9 +10,9 @@ local loaderTypes = root.types["loader.d"]
 
 export type TQuebecInstance = {
 	callingScript: BaseScript,
-	config: configurationTypes.TConfiguration,
+	config: configurationTypes.FrameworkConfiguration,
 	loadedModules: table,
-	loader: loaderTypes.TLoader,
+	loader: loaderTypes.Loader,
 }
 
 local QuebecInstance: TQuebecInstance = {}
