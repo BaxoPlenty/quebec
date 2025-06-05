@@ -3,9 +3,11 @@
 **Quebec** is a modular framework used in Roblox games. Its goal is to boilerplate code and provide the developer with useful yet simple features. A simple service looks like this:
 
 ```lua
-local TestService = {}
+local TestService = {
+    lifecycles = { "start" }
+}
 
-function TestService:OnStart()
+function TestService:start()
     print("Hello, World!")
 end
 
@@ -16,7 +18,8 @@ Or even shorter:
 
 ```lua
 return {
-    OnStart = function (_)
+    lifecycles = { "start" },
+    start = function (_)
         print("Hello, World!")
     end
 }
