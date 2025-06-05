@@ -31,12 +31,6 @@ function QuebecInstance.new(callingScript: BaseScript, config: configurationType
 	return self
 end
 
-function QuebecInstance:loadNecessaryModules()
-	for _, moduleName in next, self.config.enabledModules do
-		-- TODO: Implement this to work with namespaces aswell
-	end
-end
-
 function QuebecInstance:bootstrap()
 	if self.config.logging == "studio" then
 		logger.enableDebug = game:GetService("RunService"):IsStudio()
@@ -45,8 +39,6 @@ function QuebecInstance:bootstrap()
 	elseif self.config.logging == "never" then
 		logger.enableDebug = false
 	end
-
-	self:loadNecessaryModules()
 
 	logger:debug(
 		"QuebecInstance:bootstrap",

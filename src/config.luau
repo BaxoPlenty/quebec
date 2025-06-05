@@ -4,7 +4,6 @@ local defaultConfiguration: configurationTypes.FrameworkConfiguration = {
 	--[[ - START OF CONFIG - ]]
 
 	logging = "studio",
-	enabledModules = {},
 
 	--[[ - END OF CONFIG - ]]
 }
