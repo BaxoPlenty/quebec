@@ -3,17 +3,18 @@ local RunService = game:GetService("RunService")
 local root = script.Parent.Parent
 
 local logger = require(root.internal.logger)
-local serviceLoader = require(root.core.ServiceLoader)
-local controllerLoader = require(root.core.ControllerLoader)
+
+local ServiceManager = require(root.core.ServiceManager)
+local ControllerManager = require(root.core.ControllerManager)
 
 local configurationTypes = root.types["config.d"]
-local loaderTypes = root.types["loader.d"]
+local managerTypes = root.types["manager.d"]
 
 export type QuebecInstance = {
 	callingScript: BaseScript,
 	config: configurationTypes.FrameworkConfiguration,
 	loadedModules: table,
-	loader: loaderTypes.Loader,
+	manager: managerTypes.Manager,
 }
 
 local QuebecInstance: QuebecInstance = {}
@@ -39,13 +40,19 @@ end
 function QuebecInstance:bootstrap()
 	self:loadNecessaryModules()
 
+	logger:debug(
+		"QuebecInstance:bootstrap",
+		"(%s) initializing manager",
+		if RunService:IsClient() then "client" else "server"
+	)
+
 	if RunService:IsClient() then
-		self.loader = controllerLoader.new(self.callingScript:FindFirstChild("controllers"))
+		self.manager = ControllerManager.new(self.callingScript:FindFirstChild("controllers"))
 	else
-		self.loader = serviceLoader.new(self, self.callingScript:FindFirstChild("services"))
+		self.manager = ServiceManager.new(self, self.callingScript:FindFirstChild("services"))
 	end
 
-	if not self.loader:load() then
+	if not self.manager:load() then
 		logger:criticalError(
 			"QuebecInstance:bootstrap",
 			"(%s) unable to load modules. check the logs for more information",
@@ -53,7 +60,7 @@ function QuebecInstance:bootstrap()
 		)
 	end
 
-	self.loader:run()
+	self.manager:run()
 end
 
 return QuebecInstance
