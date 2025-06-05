@@ -1,3 +1,5 @@
 export type FrameworkConfiguration = {
-	enabledModules: {},
+	logging: "always" | "studio" | "never",
+
+	enabledModules: { string },
 }

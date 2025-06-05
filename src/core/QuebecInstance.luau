@@ -21,7 +21,7 @@ local QuebecInstance: QuebecInstance = {}
 
 QuebecInstance.__index = QuebecInstance
 
-function QuebecInstance.new(callingScript, config)
+function QuebecInstance.new(callingScript: BaseScript, config: configurationTypes.FrameworkConfiguration)
 	local self = setmetatable({}, QuebecInstance)
 
 	self.callingScript = callingScript
@@ -38,6 +38,14 @@ function QuebecInstance:loadNecessaryModules()
 end
 
 function QuebecInstance:bootstrap()
+	if self.config.logging == "studio" then
+		logger.enableDebug = game:GetService("RunService"):IsStudio()
+	elseif self.config.logging == "always" then
+		logger.enableDebug = true
+	elseif self.config.logging == "never" then
+		logger.enableDebug = false
+	end
+
 	self:loadNecessaryModules()
 
 	logger:debug(
