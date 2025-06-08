@@ -39,15 +39,15 @@ function QuebecInstance.new(
 end
 
 function QuebecInstance:bootstrap()
-	if self.config.logging == "studio" then
+	if self.config.debug == "studio" then
 		logger.enableDebug = game:GetService("RunService"):IsStudio()
-	elseif self.config.logging == "always" then
+	elseif self.config.debug == "always" then
 		logger.enableDebug = true
-	elseif self.config.logging == "never" then
+	elseif self.config.debug == "never" then
 		logger.enableDebug = false
 	end
 
-	if self.config.logNonCritical == true then
+	if self.config.logNonCritical == true or self.config.logNonCritical == nil then
 		logger.enableInfo = true
 	else
 		logger.enableInfo = false
