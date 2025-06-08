@@ -60,7 +60,7 @@ function ControllerLoader:load(): boolean
 		local module = require(instance) :: controllerTypes.Controller
 		local lifecycles = module.lifecycles or {}
 
-		module.identifier = module.identifier or `@controllers/{string.gsub(instance.Name, " ", "_")}`
+		module.identifier = module.identifier or string.gsub(instance.Name, " ", "_")
 
 		for k, v in next, lifecycles do
 			if typeof(k) == "string" then

@@ -65,7 +65,7 @@ function ServiceManager:load(): boolean
 		local module = require(instance) :: serviceTypes.Service
 		local lifecycles = module.lifecycles or {}
 
-		module.identifier = module.identifier or `@services/{string.gsub(instance.Name, " ", "_")}`
+		module.identifier = module.identifier or string.gsub(instance.Name, " ", "_")
 
 		if module.dependencies then
 			-- TODO: Implement this
