@@ -56,8 +56,8 @@ function QuebecInstance:bootstrap()
 	logger:debug(
 		"QuebecInstance:bootstrap",
 		"logger setup finished debug=%s info=%s",
-		logger.enableDebug,
-		logger.enableInfo
+		tostring(logger.enableDebug),
+		tostring(logger.enableInfo)
 	)
 
 	logger:debug(
