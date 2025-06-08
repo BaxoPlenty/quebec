@@ -6,6 +6,7 @@ local logger = require(root.internal.logger)
 
 local ServiceManager = require(root.core.ServiceManager)
 local ControllerManager = require(root.core.ControllerManager)
+local DefaultConfig = require(root.config)
 
 local optionsTypes = root.types["options.d"]
 local configurationTypes = root.types["config.d"]
@@ -65,7 +66,21 @@ function QuebecInstance:waitForSharedInstance(instanceName: string, timeout: num
 	end
 end
 
+function QuebecInstance:reconcileConfig()
+	if self.config.debug == nil then
+		self.config.debug = DefaultConfig.debug
+	end
+
+	if self.config.logNonCritical == nil then
+		self.config.logNonCritical = DefaultConfig.logNonCritical
+	end
+
+	logger:debug("QuebecInstance:reconcileConfig", "config reconciled (if needed)")
+end
+
 function QuebecInstance:bootstrap()
+	self:reconcileConfig()
+
 	if self.config.debug == "studio" then
 		logger.enableDebug = game:GetService("RunService"):IsStudio()
 	elseif self.config.debug == "always" then
@@ -74,7 +89,7 @@ function QuebecInstance:bootstrap()
 		logger.enableDebug = false
 	end
 
-	if self.config.logNonCritical == true or self.config.logNonCritical == nil then
+	if self.config.logNonCritical == true then
 		logger.enableInfo = true
 	else
 		logger.enableInfo = false
