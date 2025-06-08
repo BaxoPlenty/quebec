@@ -7,12 +7,14 @@ local logger = require(root.internal.logger)
 local ServiceManager = require(root.core.ServiceManager)
 local ControllerManager = require(root.core.ControllerManager)
 
+local optionsTypes = root.types["options.d"]
 local configurationTypes = root.types["config.d"]
 local managerTypes = root.types["manager.d"]
 
 export type QuebecInstance = {
 	callingScript: BaseScript,
 	config: configurationTypes.FrameworkConfiguration,
+	instanceOptions: optionsTypes.InstanceOptions?,
 	loadedModules: table,
 	manager: managerTypes.Manager,
 }
@@ -21,10 +23,15 @@ local QuebecInstance: QuebecInstance = {}
 
 QuebecInstance.__index = QuebecInstance
 
-function QuebecInstance.new(callingScript: BaseScript, config: configurationTypes.FrameworkConfiguration)
+function QuebecInstance.new(
+	callingScript: BaseScript,
+	config: configurationTypes.FrameworkConfiguration,
+	instanceOptions: optionsTypes.InstanceOptions?
+)
 	local self = setmetatable({}, QuebecInstance)
 
 	self.callingScript = callingScript
+	self.instanceOptions = instanceOptions
 	self.config = config
 	self.loadedModules = {}
 
@@ -39,6 +46,19 @@ function QuebecInstance:bootstrap()
 	elseif self.config.logging == "never" then
 		logger.enableDebug = false
 	end
+
+	if self.config.logNonCritical == true then
+		logger.enableInfo = true
+	else
+		logger.enableInfo = false
+	end
+
+	logger:debug(
+		"QuebecInstance:bootstrap",
+		"logger setup finished debug=%s info=%s",
+		logger.enableDebug,
+		logger.enableInfo
+	)
 
 	logger:debug(
 		"QuebecInstance:bootstrap",
@@ -61,6 +81,10 @@ function QuebecInstance:bootstrap()
 	end
 
 	self.manager:run()
+
+	if self.instanceOptions.exportName ~= nil then
+		logger:warn("QuebecInstance:bootstrap", "todo: enable export exportName=%q", self.instanceOptions.exportName)
+	end
 end
 
 return QuebecInstance

@@ -1,3 +1,4 @@
 export type FrameworkConfiguration = {
-	logging: "always" | "studio" | "never",
+	debug: ("always" | "studio" | "never")?,
+	logNonCritical: boolean?,
 }

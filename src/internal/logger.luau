@@ -1,5 +1,6 @@
 local Logger = {
 	enableDebug = game:GetService("RunService"):IsStudio(),
+	enableInfo = true,
 }
 
 ---Logs debug information to the console.
@@ -13,7 +14,9 @@ end
 
 ---Logs info to the console.
 function Logger:info(where, fmt, ...)
-	print(`[ INF @ {where} ] {string.format(fmt, ...)}`)
+	if self.enableInfo then
+		print(`[ INF @ {where} ] {string.format(fmt, ...)}`)
+	end
 end
 
 ---Logs a warning to the console.

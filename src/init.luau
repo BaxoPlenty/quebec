@@ -2,6 +2,7 @@
 
 local QuebecInstance = require(script.core.QuebecInstance)
 
+local optionsTypes = script.types["options.d"]
 local configurationTypes = script.types["config.d"]
 
 ---Loads the framework configuration from the provided ModuleScript
@@ -15,9 +16,9 @@ local function loadConfiguration(path: ModuleScript?): configurationTypes.Framew
 	end
 end
 
-return function(callingScript: BaseScript, configPath: ModuleScript?)
-	local config = loadConfiguration(configPath)
-	local instance = QuebecInstance.new(callingScript, config)
+return function(callingScript: BaseScript, opts: optionsTypes.InstanceOptions?)
+	local config = if type(opts.config) == "table" then opts.config else loadConfiguration(opts.config)
+	local instance = QuebecInstance.new(callingScript, config, opts)
 
 	instance:bootstrap()
 
