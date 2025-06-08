@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local quebecTypes = script.Parent.Parent.core.QuebecInstance
@@ -104,7 +105,7 @@ function ServiceManager:run()
 		for i = #self.loadedServices, 1, -1 do
 			local service = self.loadedServices[i]
 
-			self:callLifecycle(service, false, "destroy")
+			self:callLifecycle(service, false, "onShutdown")
 		end
 	end)
 
@@ -117,6 +118,18 @@ function ServiceManager:run()
 	RunService.PostSimulation:Connect(function(deltaTime)
 		for _, service in self.loadedServices do
 			self:callLifecycle(service, true, "onPhysics", deltaTime)
+		end
+	end)
+
+	Players.PlayerAdded:Connect(function(player)
+		for _, service in self.loadedServices do
+			self:callLifecycle(service, true, "onPlayerJoin", player)
+		end
+	end)
+
+	Players.PlayerRemoving:Connect(function(player)
+		for _, service in self.loadedServices do
+			self:callLifecycle(service, true, "onPlayerLeave", player)
 		end
 	end)
 end
