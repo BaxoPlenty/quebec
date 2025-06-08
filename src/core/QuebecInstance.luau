@@ -6,18 +6,24 @@ local logger = require(root.internal.logger)
 
 local ServiceManager = require(root.core.ServiceManager)
 local ControllerManager = require(root.core.ControllerManager)
+local DependencyFinder = require(root.core.DependencyFinder)
 local DefaultConfig = require(root.config)
 
 local optionsTypes = root.types["options.d"]
 local configurationTypes = root.types["config.d"]
 local managerTypes = root.types["manager.d"]
+local finderTypes = root.types["finder.d"]
 
 export type QuebecInstance = {
 	callingScript: BaseScript,
 	config: configurationTypes.FrameworkConfiguration,
 	instanceOptions: optionsTypes.InstanceOptions?,
 	loadedModules: table,
+	singletonFolder: Folder,
 	manager: managerTypes.Manager<any>,
+	finder: finderTypes.Finder,
+
+	waitForSharedInstance: (QuebecInstance, name: string, timeout: number?) -> QuebecInstance?,
 }
 
 local QuebecInstance: QuebecInstance = {}
@@ -35,6 +41,22 @@ function QuebecInstance.new(
 	self.instanceOptions = instanceOptions
 	self.config = config
 	self.loadedModules = {}
+
+	local singletonFolderName = type(instanceOptions.singletonFolder) == "string" and instanceOptions.singletonFolder
+		or (if RunService:IsClient() then "controllers" else "services")
+
+	if typeof(instanceOptions.singletonFolder) == "Instance" then
+		self.singletonFolder = instanceOptions.singletonFolder
+	else
+		self.singletonFolder = self.callingScript:FindFirstChild(singletonFolderName)
+			or self.callingScript.Parent:FindFirstChild(singletonFolderName)
+	end
+
+	if not self.singletonFolder then
+		logger:criticalError("QuebecInstance.new", "unable to find singletonFolder")
+	end
+
+	self.finder = DependencyFinder.new(self)
 
 	return self
 end
@@ -108,9 +130,9 @@ function QuebecInstance:bootstrap()
 	)
 
 	if RunService:IsClient() then
-		self.manager = ControllerManager.new(self.callingScript:FindFirstChild("controllers"))
+		self.manager = ControllerManager.new(self, self.singletonFolder)
 	else
-		self.manager = ServiceManager.new(self, self.callingScript:FindFirstChild("services"))
+		self.manager = ServiceManager.new(self, self.singletonFolder)
 	end
 
 	if not self.manager:load() then
