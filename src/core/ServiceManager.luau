@@ -5,10 +5,9 @@ local quebecTypes = script.Parent.Parent.core.QuebecInstance
 local managerTypes = script.Parent.Parent.types["manager.d"]
 local serviceTypes = script.Parent.Parent.types["service.d"]
 
-export type ServiceManager = managerTypes.Manager & {
+export type ServiceManager = managerTypes.Manager<serviceTypes.Service> & {
 	folder: Folder,
 	instance: quebecTypes.QuebecInstance,
-	loadedServices: { serviceTypes.Service },
 	lifecyceMap: { [string]: { serviceTypes.Service } },
 }
 
@@ -18,11 +17,11 @@ local ServiceManager: ServiceManager = {}
 ServiceManager.__index = ServiceManager
 
 function ServiceManager.new(instance, folder)
-	local self = setmetatable({}, ServiceManager)
+	local self = setmetatable({}, ServiceManager) :: ServiceManager
 
+	self.loadedSingletons = {}
 	self.instance = instance
 	self.folder = folder
-	self.loadedServices = {}
 	self.lifecyceMap = {}
 
 	return self
@@ -90,45 +89,45 @@ function ServiceManager:load(): boolean
 
 		self:callLifecycle(module, false, "init")
 
-		table.insert(self.loadedServices, module) -- TODO: Add topological sorting for a correct load order
+		table.insert(self.loadedSingletons, module) -- TODO: Add topological sorting for a correct load order
 	end
 
 	return true
 end
 
 function ServiceManager:run()
-	for _, service in self.loadedServices do
+	for _, service in self.loadedSingletons do
 		self:callLifecycle(service, true, "start")
 	end
 
 	game:BindToClose(function()
-		for i = #self.loadedServices, 1, -1 do
-			local service = self.loadedServices[i]
+		for i = #self.loadedSingletons, 1, -1 do
+			local service = self.loadedSingletons[i]
 
 			self:callLifecycle(service, false, "onShutdown")
 		end
 	end)
 
 	RunService.Heartbeat:Connect(function(deltaTime)
-		for _, service in self.loadedServices do
+		for _, service in self.loadedSingletons do
 			self:callLifecycle(service, true, "onStep", deltaTime)
 		end
 	end)
 
 	RunService.PostSimulation:Connect(function(deltaTime)
-		for _, service in self.loadedServices do
+		for _, service in self.loadedSingletons do
 			self:callLifecycle(service, true, "onPhysics", deltaTime)
 		end
 	end)
 
 	Players.PlayerAdded:Connect(function(player)
-		for _, service in self.loadedServices do
+		for _, service in self.loadedSingletons do
 			self:callLifecycle(service, true, "onPlayerJoin", player)
 		end
 	end)
 
 	Players.PlayerRemoving:Connect(function(player)
-		for _, service in self.loadedServices do
+		for _, service in self.loadedSingletons do
 			self:callLifecycle(service, true, "onPlayerLeave", player)
 		end
 	end)

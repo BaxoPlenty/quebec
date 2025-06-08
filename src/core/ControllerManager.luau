@@ -3,9 +3,8 @@ local RunService = game:GetService("RunService")
 local managerTypes = script.Parent.Parent.types["manager.d"]
 local controllerTypes = script.Parent.Parent.types["controller.d"]
 
-export type ControllerLoader = managerTypes.Manager & {
+export type ControllerLoader = managerTypes.Manager<controllerTypes.Controller> & {
 	folder: Folder,
-	loadedControllers: { controllerTypes.Controller },
 	lifecyceMap: { [string]: { controllerTypes.Controller } },
 }
 
@@ -18,7 +17,7 @@ function ControllerLoader.new(folder)
 	local self = setmetatable({}, ControllerLoader)
 
 	self.folder = folder
-	self.loadedControllers = {}
+	self.loadedSingletons = {}
 	self.lifecyceMap = {}
 
 	return self
@@ -81,25 +80,25 @@ function ControllerLoader:load(): boolean
 
 		self:callLifecycle(module, false, "init")
 
-		table.insert(self.loadedControllers, module) -- TODO: Add topological sort algorithm
+		table.insert(self.loadedSingletons, module) -- TODO: Add topological sort algorithm
 	end
 
 	return true
 end
 
 function ControllerLoader:run()
-	for _, controller in ipairs(self.loadedControllers) do
+	for _, controller in ipairs(self.loadedSingletons) do
 		self:callLifecycle(controller, true, "start")
 	end
 
 	RunService.Heartbeat:Connect(function(deltaTime)
-		for _, controller in self.loadedControllers do
+		for _, controller in self.loadedSingletons do
 			self:callLifecycle(controller, true, "onStep", deltaTime)
 		end
 	end)
 
 	RunService.PostSimulation:Connect(function(deltaTime)
-		for _, controller in self.loadedControllers do
+		for _, controller in self.loadedSingletons do
 			self:callLifecycle(controller, true, "onPhysics", deltaTime)
 		end
 	end)

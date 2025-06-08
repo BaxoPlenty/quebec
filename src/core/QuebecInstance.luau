@@ -16,7 +16,7 @@ export type QuebecInstance = {
 	config: configurationTypes.FrameworkConfiguration,
 	instanceOptions: optionsTypes.InstanceOptions?,
 	loadedModules: table,
-	manager: managerTypes.Manager,
+	manager: managerTypes.Manager<any>,
 }
 
 local QuebecInstance: QuebecInstance = {}
@@ -36,6 +36,33 @@ function QuebecInstance.new(
 	self.loadedModules = {}
 
 	return self
+end
+
+function QuebecInstance:waitForSharedInstance(instanceName: string, timeout: number?): QuebecInstance?
+	local start = os.clock()
+
+	timeout = timeout or 5
+
+	while true do
+		local instance = shared.SharedQuebecInstances and shared.SharedQuebecInstances[instanceName]
+
+		if instance then
+			return instance
+		end
+
+		if os.clock() - start > timeout then
+			logger:warn(
+				"QuebecInstance:waitForSharedInstance",
+				"shared QuebecInstance %q not found within %d seconds",
+				instanceName,
+				timeout
+			)
+
+			return nil
+		end
+
+		task.wait(0.25)
+	end
 end
 
 function QuebecInstance:bootstrap()
@@ -84,12 +111,19 @@ function QuebecInstance:bootstrap()
 	self.manager:run()
 
 	if self.instanceOptions.exportName ~= nil then
-		logger:warn(
-			"QuebecInstance:bootstrap",
-			"(%s) todo: enable export exportName=%q",
-			if RunService:IsClient() then "client" else "server",
-			self.instanceOptions.exportName
-		)
+		if not shared.SharedQuebecInstances then
+			shared.SharedQuebecInstances = {}
+		end
+
+		if shared.SharedQuebecInstances[self.instanceOptions.exportName] then
+			logger:criticalError(
+				"QuebecInstance:bootstrap",
+				"an instance named %q was already exported before",
+				self.instanceOptions.exportName
+			)
+		end
+
+		shared.SharedQuebecInstances[self.instanceOptions.exportName] = self
 	end
 end
 
