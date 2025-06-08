@@ -190,29 +190,37 @@ function ServiceManager:run()
 		end
 	end)
 
-	RunService.Heartbeat:Connect(function(deltaTime)
-		for _, service in self.loadedSingletons do
-			self:callLifecycle(service, true, "onStep", deltaTime)
-		end
-	end)
+	if self.lifecyceMap.onStep then
+		RunService.Heartbeat:Connect(function(deltaTime)
+			for _, service in self.lifecyceMap.onStep do
+				self:callLifecycle(service, true, "onStep", deltaTime)
+			end
+		end)
+	end
 
-	RunService.PostSimulation:Connect(function(deltaTime)
-		for _, service in self.loadedSingletons do
-			self:callLifecycle(service, true, "onPhysics", deltaTime)
-		end
-	end)
+	if self.lifecyceMap.onPhysics then
+		RunService.PostSimulation:Connect(function(deltaTime)
+			for _, service in self.lifecyceMap.onPhysics do
+				self:callLifecycle(service, true, "onPhysics", deltaTime)
+			end
+		end)
+	end
 
-	Players.PlayerAdded:Connect(function(player)
-		for _, service in self.loadedSingletons do
-			self:callLifecycle(service, true, "onPlayerJoin", player)
-		end
-	end)
+	if self.lifecyceMap.onPlayerJoin then
+		Players.PlayerAdded:Connect(function(player)
+			for _, service in self.lifecyceMap.onPlayerJoin do
+				self:callLifecycle(service, true, "onPlayerJoin", player)
+			end
+		end)
+	end
 
-	Players.PlayerRemoving:Connect(function(player)
-		for _, service in self.loadedSingletons do
-			self:callLifecycle(service, true, "onPlayerLeave", player)
-		end
-	end)
+	if self.lifecyceMap.onPlayerLeave then
+		Players.PlayerRemoving:Connect(function(player)
+			for _, service in self.lifecyceMap.onPlayerLeave do
+				self:callLifecycle(service, true, "onPlayerLeave", player)
+			end
+		end)
+	end
 end
 
 return ServiceManager
