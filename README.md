@@ -45,19 +45,15 @@ In the `init.*.lua` file, you simply load the Quebec module, and it will handle 
 ```lua
 -- init.*.lua
 
-require("path_to_quebec")(script --[[ , optional_path_to_config ]])
+require("path_to_quebec")(script --[[ , table of options ]])
 ```
 
 You can load the same Quebec module on both client and server. It will automatically determine the environment which it's running in.
 
-## 📦 Dependencies
+## 📦 Modules
 
-**TODO**
+Modules are essentially libraries which you can use inside your singletons as a dependency. There's guides for:
 
-### ✅ Available Modules
-
-**TODO**
-
-### ➕ Adding Dependencies
-
-**TODO**
+-   [Adding modules to a singleton](https://baxoplenty.gitbook.io/quebec-docs/modules/requiring-modules)
+-   [Writing your own modules](https://baxoplenty.gitbook.io/quebec-docs/custom-modules)
+-   [A list of built-in modules](https://baxoplenty.gitbook.io/quebec-docs/built-in-modules)
