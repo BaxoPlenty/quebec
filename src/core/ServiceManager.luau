@@ -1,4 +1,5 @@
 local RunService = game:GetService("RunService")
+
 local quebecTypes = script.Parent.Parent.core.QuebecInstance
 local managerTypes = script.Parent.Parent.types["manager.d"]
 local serviceTypes = script.Parent.Parent.types["service.d"]
@@ -99,7 +100,7 @@ function ServiceManager:run()
 		self:callLifecycle(service, true, "start")
 	end
 
-	game.Close:Connect(function()
+	game:BindToClose(function()
 		for i = #self.loadedServices, 1, -1 do
 			local service = self.loadedServices[i]
 

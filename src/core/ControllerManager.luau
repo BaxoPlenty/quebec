@@ -1,4 +1,5 @@
 local RunService = game:GetService("RunService")
+
 local managerTypes = script.Parent.Parent.types["manager.d"]
 local controllerTypes = script.Parent.Parent.types["controller.d"]
 
@@ -90,14 +91,6 @@ function ControllerLoader:run()
 	for _, controller in ipairs(self.loadedControllers) do
 		self:callLifecycle(controller, true, "start")
 	end
-
-	game.Close:Connect(function()
-		for i = #self.loadedControllers, 1, -1 do
-			local controller = self.loadedControllers[i]
-
-			self:callLifecycle(controller, false, "destroy")
-		end
-	end)
 
 	RunService.Heartbeat:Connect(function(deltaTime)
 		for _, controller in self.loadedControllers do
