@@ -55,7 +55,8 @@ function QuebecInstance:bootstrap()
 
 	logger:debug(
 		"QuebecInstance:bootstrap",
-		"logger setup finished debug=%s info=%s",
+		"(%s) logger setup finished debug=%s info=%s",
+		if RunService:IsClient() then "client" else "server",
 		tostring(logger.enableDebug),
 		tostring(logger.enableInfo)
 	)
@@ -83,7 +84,12 @@ function QuebecInstance:bootstrap()
 	self.manager:run()
 
 	if self.instanceOptions.exportName ~= nil then
-		logger:warn("QuebecInstance:bootstrap", "todo: enable export exportName=%q", self.instanceOptions.exportName)
+		logger:warn(
+			"QuebecInstance:bootstrap",
+			"(%s) todo: enable export exportName=%q",
+			if RunService:IsClient() then "client" else "server",
+			self.instanceOptions.exportName
+		)
 	end
 end
 
