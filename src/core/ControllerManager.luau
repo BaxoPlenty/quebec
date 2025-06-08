@@ -184,17 +184,21 @@ function ControllerLoader:run()
 		self:callLifecycle(controller, true, "start")
 	end
 
-	RunService.Heartbeat:Connect(function(deltaTime)
-		for _, controller in self.loadedSingletons do
-			self:callLifecycle(controller, true, "onStep", deltaTime)
-		end
-	end)
+	if self.lifecyceMap.onStep then
+		RunService.Heartbeat:Connect(function(deltaTime)
+			for _, controller in self.lifecyceMap.onStep do
+				self:callLifecycle(controller, true, "onStep", deltaTime)
+			end
+		end)
+	end
 
-	RunService.PostSimulation:Connect(function(deltaTime)
-		for _, controller in self.loadedSingletons do
-			self:callLifecycle(controller, true, "onPhysics", deltaTime)
-		end
-	end)
+	if self.lifecyceMap.onPhysics then
+		RunService.PostSimulation:Connect(function(deltaTime)
+			for _, controller in self.lifecyceMap.onPhysics do
+				self:callLifecycle(controller, true, "onPhysics", deltaTime)
+			end
+		end)
+	end
 end
 
 return ControllerLoader
