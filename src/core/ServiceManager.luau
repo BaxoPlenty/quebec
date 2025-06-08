@@ -1,3 +1,4 @@
+local RunService = game:GetService("RunService")
 local quebecTypes = script.Parent.Parent.core.QuebecInstance
 local managerTypes = script.Parent.Parent.types["manager.d"]
 local serviceTypes = script.Parent.Parent.types["service.d"]
@@ -94,9 +95,29 @@ function ServiceManager:load(): boolean
 end
 
 function ServiceManager:run()
-	for _, service in ipairs(self.loadedServices) do
+	for _, service in self.loadedServices do
 		self:callLifecycle(service, true, "start")
 	end
+
+	game.Close:Connect(function()
+		for i = #self.loadedServices, 1, -1 do
+			local service = self.loadedServices[i]
+
+			self:callLifecycle(service, false, "destroy")
+		end
+	end)
+
+	RunService.Heartbeat:Connect(function(deltaTime)
+		for _, service in self.loadedServices do
+			self:callLifecycle(service, true, "onStep", deltaTime)
+		end
+	end)
+
+	RunService.PostSimulation:Connect(function(deltaTime)
+		for _, service in self.loadedServices do
+			self:callLifecycle(service, true, "onPhysics", deltaTime)
+		end
+	end)
 end
 
 return ServiceManager
