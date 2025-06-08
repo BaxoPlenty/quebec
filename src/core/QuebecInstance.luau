@@ -74,8 +74,6 @@ function QuebecInstance:reconcileConfig()
 	if self.config.logNonCritical == nil then
 		self.config.logNonCritical = DefaultConfig.logNonCritical
 	end
-
-	logger:debug("QuebecInstance:reconcileConfig", "config reconciled (if needed)")
 end
 
 function QuebecInstance:bootstrap()
