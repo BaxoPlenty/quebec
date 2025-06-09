@@ -4,8 +4,7 @@ local root = script.Parent.Parent
 
 local logger = require(root.internal.logger)
 
-local ServiceManager = require(root.core.ServiceManager)
-local ControllerManager = require(root.core.ControllerManager)
+local SingletonManager = require(root.core.SingletonManager)
 local DependencyFinder = require(root.core.DependencyFinder)
 local DefaultConfig = require(root.config)
 
@@ -129,11 +128,7 @@ function QuebecInstance:bootstrap()
 		if RunService:IsClient() then "client" else "server"
 	)
 
-	if RunService:IsClient() then
-		self.manager = ControllerManager.new(self, self.singletonFolder)
-	else
-		self.manager = ServiceManager.new(self, self.singletonFolder)
-	end
+	self.manager = SingletonManager.new(self, self.singletonFolder)
 
 	if not self.manager:load() then
 		logger:criticalError(

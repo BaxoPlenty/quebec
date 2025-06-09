@@ -1,6 +1,6 @@
-export type Controller = {
+export type Singleton = {
 	data: any?,
 	identifier: string?,
 	dependencies: { [number | string]: string | ModuleScript }?,
-	lifecycles: { [string | number]: string },
+	lifecycles: { [string | number]: string }?,
 }
