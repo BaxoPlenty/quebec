@@ -116,26 +116,17 @@ function QuebecInstance:bootstrap()
 
 	logger:debug(
 		"QuebecInstance:bootstrap",
-		"(%s) logger setup finished debug=%s info=%s",
-		if RunService:IsClient() then "client" else "server",
+		"logger setup finished debug=%s info=%s",
 		tostring(logger.enableDebug),
 		tostring(logger.enableInfo)
 	)
 
-	logger:debug(
-		"QuebecInstance:bootstrap",
-		"(%s) initializing manager",
-		if RunService:IsClient() then "client" else "server"
-	)
+	logger:debug("QuebecInstance:bootstrap", "initializing manager")
 
 	self.manager = SingletonManager.new(self, self.singletonFolder)
 
 	if not self.manager:load() then
-		logger:criticalError(
-			"QuebecInstance:bootstrap",
-			"(%s) unable to load modules. check the logs for more information",
-			if RunService:IsClient() then "client" else "server"
-		)
+		logger:criticalError("QuebecInstance:bootstrap", "unable to load modules. check the logs for more information")
 	end
 
 	self.manager:run()
