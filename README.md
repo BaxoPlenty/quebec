@@ -55,5 +55,12 @@ You can load the same Quebec module on both client and server. It will automatic
 Modules are essentially libraries which you can use inside your singletons as a dependency. There's guides for:
 
 -   [Adding modules to a singleton](https://baxoplenty.gitbook.io/quebec-docs/modules/requiring-modules)
--   [Writing your own modules](https://baxoplenty.gitbook.io/quebec-docs/custom-modules)
 -   [A list of built-in modules](https://baxoplenty.gitbook.io/quebec-docs/built-in-modules)
+
+## ⛰️ Roadmap
+
+Quebec is still being actively developed. You can track the development status here: https://github.com/BaxoPlenty/quebec/issues
+
+## 🤝 Contributing
+
+Thank you for your interest in contributing! There are many ways to contribute to this project. Get started here: [Contributing Guide](/CONTRIBUTING.md)
