@@ -4,7 +4,7 @@
 > We'd love your feedback! If you run into any issues or have suggestions, please open an issue.
 > The goal is to build something truly great, together.
 
-**Quebec** is a modular framework used in Roblox games. Its goal is to boilerplate code and provide the developer with useful yet simple features. A simple service looks like this:
+**Quebec** is a modular framework used in Roblox games. It's goal is to reduce boilerplate code and provide the developer with useful yet simple features. A simple service looks like this:
 
 ```lua
 local TestService = {
@@ -28,6 +28,19 @@ return {
     end
 }
 ```
+
+## 📚 Documentation
+
+The documentation can be found here: https://baxoplenty.gitbook.io/quebec-docs
+
+## 🧪 Example Setup
+
+You can find an example setup using Rojo here: https://github.com/BaxoPlenty/quebec-rojo-setup
+
+It contains 2 branches:
+
+-   `multiplace` - for games having multiple places and shared code
+-   `singleplace` - for games that only have one place
 
 ## 📁 Project Structure
 
