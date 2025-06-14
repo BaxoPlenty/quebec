@@ -2,30 +2,29 @@ local root = script.Parent.Parent
 
 local logger = require(root.internal.logger)
 
-local finderTypes = root.types["finder.d"]
+local resolverTypes = root.types["resolver.d"]
 local quebecInstanceTypes = root.core.QuebecInstance
 
-type DependencyFinder = finderTypes.Finder & {
+type DependencyResolver = resolverTypes.Resolver & {
 	instance: quebecInstanceTypes.QuebecInstance,
 }
 
-local DependencyFinder: DependencyFinder = {}
+local DependencyResolver: DependencyResolver = {}
+DependencyResolver.__index = DependencyResolver
 
-DependencyFinder.__index = DependencyFinder
-
-function DependencyFinder.new(instance: quebecInstanceTypes.QuebecInstance)
-	local self = setmetatable({}, DependencyFinder) :: DependencyFinder
+function DependencyResolver.new(instance: quebecInstanceTypes.QuebecInstance)
+	local self = setmetatable({}, DependencyResolver) :: DependencyResolver
 
 	self.instance = instance
 
 	return self
 end
 
-function DependencyFinder:find(searchString: string): finderTypes.FinderResult?
+function DependencyResolver:resolve(searchString: string): resolverTypes.ResolverResult?
 	local segments = string.split(string.gsub(searchString, "@", "", 1), "/")
 
 	if #segments < 2 then
-		return logger:criticalError("DependencyFinder:find", "less than 2 segments detected in string %q", searchString)
+		return logger:criticalError("DependencyResolver:resolve", "less than 2 segments detected in string %q", searchString)
 	end
 
 	if segments[1] == self.instance.singletonFolder.Name then
@@ -39,7 +38,7 @@ function DependencyFinder:find(searchString: string): finderTypes.FinderResult?
 			kind = "module",
 		}
 	else
-        local instanceName = segments[1]
+		local instanceName = segments[1]
 		local instance = self.instance:waitForSharedInstance(instanceName)
 
 		if instance then
@@ -47,21 +46,21 @@ function DependencyFinder:find(searchString: string): finderTypes.FinderResult?
 
 			if #segments > 2 then
 				logger:criticalError(
-					"DependencyFinder:find",
+					"DependencyResolver:resolve",
 					"invalid segments. did you try to access multiple instances at once? path=%q",
 					searchString
 				)
 			end
 
-			local result = instance.finder:find(`@{table.concat(segments, "/")}`)
+			local result = instance.resolver:resolve(`@{table.concat(segments, "/")}`)
 
-            if result then
-                result.instanceName = instanceName
+			if result then
+				result.instanceName = instanceName
 
-                return result
-            end
+				return result
+			end
 		end
 	end
 end
 
-return DependencyFinder
+return DependencyResolver

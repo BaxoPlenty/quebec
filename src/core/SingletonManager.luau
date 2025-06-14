@@ -140,7 +140,7 @@ function SingletonManager:load(): boolean
 	end
 
 	for _, singleton in self.loadedSingletons do
-		if singleton.dependencies then
+		--[==[ if singleton.dependencies then
 			singleton[singletonKindPlural] = {}
 			singleton.modules = {}
 
@@ -157,6 +157,28 @@ function SingletonManager:load(): boolean
 						self:requireDependency(result.pathSegments, result.instanceName)
 				end
 			end
+		end ]==]
+		if singleton.init and type(singleton.init) == "function" then
+			local requestedDependencies = {}
+
+			local resolverFunction = function(path)
+				table.insert(requestedDependencies, path)
+
+				local result = self.instance.resolver:resolve(path)
+
+				if result then
+					return self:requireDependency(result.pathSegments, result.instanceName)
+				else
+					logger:criticalError(
+						"SingletonManager:load",
+						"unable to load dependency %q in singleton %q",
+						path,
+						singleton.identifier
+					)
+				end
+			end
+
+			singleton:init(resolverFunction)
 		end
 	end
 
@@ -178,8 +200,6 @@ function SingletonManager:load(): boolean
 				table.insert(self.lifecyceMap[v], singleton)
 			end
 		end
-
-		self:callLifecycle(singleton, false, "init")
 	end
 
 	return true

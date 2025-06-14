@@ -5,13 +5,13 @@ local root = script.Parent.Parent
 local logger = require(root.internal.logger)
 
 local SingletonManager = require(root.core.SingletonManager)
-local DependencyFinder = require(root.core.DependencyFinder)
+local DependencyResolver = require(root.core.DependencyResolver)
 local DefaultConfig = require(root.config)
 
 local optionsTypes = root.types["options.d"]
 local configurationTypes = root.types["config.d"]
 local managerTypes = root.types["manager.d"]
-local finderTypes = root.types["finder.d"]
+local resolverTypes = root.types["resolver.d"]
 
 export type QuebecInstance = {
 	callingScript: BaseScript,
@@ -20,7 +20,7 @@ export type QuebecInstance = {
 	loadedModules: table,
 	singletonFolder: Folder,
 	manager: managerTypes.Manager<any>,
-	finder: finderTypes.Finder,
+	resolver: resolverTypes.Resolver,
 
 	waitForSharedInstance: (QuebecInstance, name: string, timeout: number?) -> QuebecInstance?,
 }
@@ -55,7 +55,7 @@ function QuebecInstance.new(
 		logger:criticalError("QuebecInstance.new", "unable to find singletonFolder")
 	end
 
-	self.finder = DependencyFinder.new(self)
+	self.resolver = DependencyResolver.new(self)
 
 	return self
 end
