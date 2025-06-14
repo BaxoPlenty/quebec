@@ -140,26 +140,8 @@ function SingletonManager:load(): boolean
 	end
 
 	for _, singleton in self.loadedSingletons do
-		--[==[ if singleton.dependencies then
-			singleton[singletonKindPlural] = {}
-			singleton.modules = {}
-
-			for k, v in singleton.dependencies do
-				if type(k) == "number" and type(v) == "string" then
-					local result = self.instance.finder:find(v)
-
-					singleton[if result.kind == "singleton" then singletonKindPlural else "modules"][result.pathSegments[#result.pathSegments]] =
-						self:requireDependency(result.pathSegments, result.instanceName)
-				elseif type(k) == "string" and type(v) == "string" then
-					local result = self.instance.finder:find(k)
-
-					singleton[if result.kind == "singleton" then singletonKindPlural else "modules"][v] =
-						self:requireDependency(result.pathSegments, result.instanceName)
-				end
-			end
-		end ]==]
 		if singleton.init and type(singleton.init) == "function" then
-            -- used to later track these for topological sort
+			-- used to later track these for topological sort
 			local requestedDependencies = {}
 
 			local resolverFunction = function(path)
