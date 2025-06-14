@@ -159,6 +159,7 @@ function SingletonManager:load(): boolean
 			end
 		end ]==]
 		if singleton.init and type(singleton.init) == "function" then
+            -- used to later track these for topological sort
 			local requestedDependencies = {}
 
 			local resolverFunction = function(path)
