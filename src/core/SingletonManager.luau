@@ -193,10 +193,18 @@ function SingletonManager:run()
 		self:callLifecycle(singleton, true, "start")
 	end
 
-	if self.lifecyceMap.onStep then
-		RunService.Heartbeat:Connect(function(deltaTime)
+	if RunService:IsClient() and self.lifecyceMap.onStep then
+		RunService.RenderStepped:Connect(function(deltaTime)
 			for _, singleton in self.lifecyceMap.onStep do
 				self:callLifecycle(singleton, true, "onStep", deltaTime)
+			end
+		end)
+	end
+
+	if self.lifecyceMap.onTick then
+		RunService.Heartbeat:Connect(function(deltaTime)
+			for _, singleton in self.lifecyceMap.onTick do
+				self:callLifecycle(singleton, true, "onTick", deltaTime)
 			end
 		end)
 	end
