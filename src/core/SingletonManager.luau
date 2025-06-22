@@ -150,7 +150,15 @@ function SingletonManager:load(): boolean
 				local result = self.instance.resolver:resolve(path)
 
 				if result then
-					return self:requireDependency(result.pathSegments, result.instanceName)
+					local dependency = self:requireDependency(result.pathSegments, result.instanceName)
+
+                    if result.kind == "module" and dependency.init and not dependency.initialized then
+                        dependency:init()
+
+                        dependency.initialized = true
+                    end
+
+                    return dependency
 				else
 					logger:criticalError(
 						"SingletonManager:load",
