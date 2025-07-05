@@ -1,4 +1,4 @@
---- A utility function to create lua-style classes by settings metatables.
+--- An utility function to create lua-style classes by settings metatables.
 return function<T, U...>(ctor: (U...) -> T): { new: (U...) -> T }
 	local class = {}
 
