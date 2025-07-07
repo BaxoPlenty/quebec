@@ -8,7 +8,7 @@ return function<T>(singleton: Types.AsSingleton<T>): T
 
 	Registry.addSingleton(internal)
 
-	if internal.init then
+	if internal.init and type(internal.init) == "function" then
 		internal:init()
 	end
 
