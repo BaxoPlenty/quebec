@@ -1,6 +1,6 @@
 --- An utility function to create lua-style classes by settings metatables.
-return function<T, U...>(ctor: (U...) -> T): { new: (U...) -> T }
-	local class = {}
+return function<T, M, U...>(ctor: (U...) -> T, members: M): { new: (U...) -> T } & M
+	local class = members
 
 	class.__index = class
 
