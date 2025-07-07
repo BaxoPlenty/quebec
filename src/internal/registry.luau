@@ -38,7 +38,7 @@ function Registry.addSingleton<T>(singleton: Types.AsInternalSingleton<T>)
 	if singleton.lifecycles then
 		for k, v in singleton.lifecycles do
 			local method = (singleton :: any)[v]
-			local lifecycle = if typeof(k) == "number" then v else k
+			local lifecycle = if type(k) == "number" then v else k
 			local t = Registry.data.singletonsByLifecycle[lifecycle]
 
 			if not t then
