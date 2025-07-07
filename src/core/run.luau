@@ -23,7 +23,7 @@ return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
 
 	for _, entry in Registry.queryLifecycleHandlers("start") do
 		task.spawn(function()
-			entry.method(entry.singleton)
+			entry.singleton[entry.method](entry.singleton)
 		end)
 	end
 

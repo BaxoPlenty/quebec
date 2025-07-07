@@ -4,7 +4,7 @@ local Types = require(root.types)
 
 type InternalData = {
 	singletons: { Types.Singleton },
-	lifecycleHandlers: { [Types.Lifecycle]: { { singleton: Types.Singleton, method: (...any) -> unknown } } },
+	lifecycleHandlers: { [Types.Lifecycle]: { { singleton: Types.Singleton, method: string } } },
 	instanceCount: number,
 	masterAssigned: boolean,
 	startLateServices: boolean,
@@ -37,14 +37,14 @@ function Registry.addSingleton<T>(singleton: Types.AsInternalSingleton<T>)
 
 	if singleton.lifecycles then
 		for k, v in singleton.lifecycles do
-			local method = (singleton :: any)[v]
+			local method = v
 			local lifecycle = if type(k) == "number" then v else k
-			local t = Registry.data.singletonsByLifecycle[lifecycle]
+			local t = Registry.data.lifecycleHandlers[lifecycle]
 
 			if not t then
-				Registry.data.singletonsByLifecycle[v] = { method = method, singleton = singleton }
+				Registry.data.lifecycleHandlers[v] = { { method = method, singleton = singleton } }
 			else
-				table.insert(t, method)
+				table.insert(t, { method = method, singleton = singleton })
 			end
 		end
 	end
