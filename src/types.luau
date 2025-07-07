@@ -11,7 +11,7 @@ export type Singleton = {
 	--- Singleton-specific data. Quebec will never access this field.
 	data: any?,
 
-	--- Lifecycle definitions of the singleton.
+	--- Optional lifecycle definitions of thae singleton. These are required if you want to use a lifecycle.
 	lifecycles: { [Lifecycle | number]: Lifecycle | string }?,
 
 	--- Optional method used to do early setup when nothing is running.
