@@ -6,8 +6,9 @@ type InternalData = {
 	singletons: { Types.Singleton },
 	lifecycleHandlers: { [Types.Lifecycle]: { { singleton: Types.Singleton, method: string } } },
 	instanceCount: number,
+	instancesReady: number,
 	masterAssigned: boolean,
-	startLateServices: boolean,
+	readyCallback: (() -> unknown)?,
 }
 
 local Registry = {
@@ -20,8 +21,9 @@ function Registry.initialize()
 			singletons = {},
 			lifecycleHandlers = {},
 			instanceCount = 0,
+			instancesReady = 0,
 			masterAssigned = false,
-			startLateServices = false,
+			readyCallback = nil,
 		} :: InternalData
 	end
 
@@ -70,12 +72,24 @@ function Registry.assignMaster(): boolean
 	end
 end
 
-function Registry.enableLateStart()
-	Registry.data.startLateServices = true
+function Registry.onAllReady(cb)
+	if Registry.data.readyCallback ~= nil then
+		return
+	end
+
+	if Registry.data.instanceCount == Registry.data.instancesReady then
+		task.spawn(cb)
+	else
+		Registry.data.readyCallback = cb
+	end
 end
 
-function Registry.isLateStartEnabled(): boolean
-	return Registry.data.startLateServices
+function Registry.markReady()
+	Registry.data.instancesReady += 1
+
+	if Registry.data.instanceCount == Registry.data.instancesReady then
+		task.spawn(Registry.data.readyCallback)
+	end
 end
 
 return Registry

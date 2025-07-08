@@ -21,13 +21,18 @@ return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
 		return
 	end
 
-	for _, entry in Registry.queryLifecycleHandlers("start") do
-		task.spawn(function()
-			entry.singleton[entry.method](entry.singleton)
-		end)
-	end
+	-- Wait for all existing instances to register their singletons
+	Registry.onAllReady(function()
+		for _, entry in Registry.queryAll() do
+			if entry.init and type(entry.init) == "function" then
+				entry:init()
+			end
+		end
 
-	Registry.enableLateStart()
-
-	Logger.debug("late start is now enabled")
+		for _, entry in Registry.queryLifecycleHandlers("start") do
+			task.spawn(function()
+				entry.singleton[entry.method](entry.singleton)
+			end)
+		end
+	end)
 end
