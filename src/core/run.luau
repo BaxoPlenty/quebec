@@ -1,8 +1,12 @@
+local RunService = game:GetService("RunService")
+
 local root = script.Parent.Parent
 
 local Types = require(root.types)
 local Logger = require(root.internal.logger)
 local Registry = require(root.internal.registry)
+
+local isServer = RunService:IsServer()
 
 return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
 	Registry.initialize()
@@ -29,10 +33,26 @@ return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
 			end
 		end
 
+		Logger.debug("singleton initialisation done")
+
 		for _, entry in Registry.queryLifecycleHandlers("start") do
 			task.spawn(function()
 				entry.singleton[entry.method](entry.singleton)
 			end)
 		end
+
+		Logger.debug("%q lifecycle invoked on all registered singletons", "start")
+
+		if isServer then
+			game:BindToClose(function()
+				for _, entry in Registry.queryLifecycleHandlers("stop") do
+					entry.singleton[entry.method](entry.singleton)
+				end
+
+				Logger.debug("%q lifecycle invoked on all registered singletons", "stop")
+			end)
+		end
+
+		Logger.debug("connected lifecycles")
 	end)
 end

@@ -56,9 +56,7 @@ function Registry.queryAll(): { Types.Singleton }
 	return Registry.data.singletons
 end
 
-function Registry.queryLifecycleHandlers(
-	lifecycle: Types.Lifecycle
-): { { method: (...any) -> unknown, singleton: Types.Singleton } }
+function Registry.queryLifecycleHandlers(lifecycle: Types.Lifecycle): { { method: string, singleton: Types.Singleton } }
 	return Registry.data.lifecycleHandlers[lifecycle] or {}
 end
 
