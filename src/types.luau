@@ -4,6 +4,12 @@ export type FrameworkConfiguration = {
 	--- A table defining how many instances are there.
 	--- It's only required if you have more than one instance.
 	instances: { string }?,
+
+	--- Defaults to false in production, but true in Studio. Enabling this will enable debug prints.
+	debug: boolean?,
+
+	--- Defaults to true. Enabling this will enable info prints.
+	info: boolean?,
 }
 
 -- Singleton

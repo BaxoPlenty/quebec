@@ -9,6 +9,16 @@ local Registry = require(root.internal.registry)
 local isServer = RunService:IsServer()
 
 return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
+	if config then
+		if config.debug ~= nil then
+			Logger.enableDebug = config.debug
+		end
+
+		if config.info ~= nil then
+			Logger.enableInfo = config.info
+		end
+	end
+
 	Registry.initialize(if config and config.instances then #config.instances else 1)
 
 	Logger.debug("registry initialized")
