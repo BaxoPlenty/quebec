@@ -1,14 +1,20 @@
+type Constructor<T, A...> = (self: T, A...) -> ()
+type Class<T, P, A...> = P & { new: (A...) -> T & P }
+
 --- An utility function to create lua-style classes by settings metatables.
-return function<T, M, U...>(ctor: (U...) -> T, members: M): { new: (U...) -> T } & M
-	local class = members
+return function<T, P, A...>(constructor: Constructor<T, A...>, prototype: P?): Class<T, P, A...>
+	local proto = prototype or {}
+	local mt = { __index = proto }
 
-	class.__index = class
+	local function new(...: A...)
+		local self = (setmetatable({}, mt) :: any) :: T
 
-	function class.new(...)
-		local instance = ctor(...)
+		constructor(self, ...)
 
-		return setmetatable(instance, class)
+		return self
 	end
 
-	return class
+	(proto :: any).new = new
+
+	return proto :: any
 end
