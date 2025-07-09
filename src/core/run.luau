@@ -9,7 +9,7 @@ local Registry = require(root.internal.registry)
 local isServer = RunService:IsServer()
 
 return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
-	Registry.initialize()
+	Registry.initialize(if config and config.instances then #config.instances else 1)
 
 	Logger.debug("registry initialized")
 
@@ -19,6 +19,8 @@ return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
 			require(instance)
 		end
 	end
+
+	Registry.markReady()
 
 	-- Don't connect lifecycles more than one time
 	if not Registry.assignMaster() then
@@ -50,6 +52,26 @@ return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
 				end
 
 				Logger.debug("%q lifecycle invoked on all registered singletons", "stop")
+			end)
+		end
+
+		RunService.Heartbeat:Connect(function(dt)
+			for _, entry in Registry.queryLifecycleHandlers("onTick") do
+				task.spawn(entry.singleton[entry.method], entry.singleton, dt)
+			end
+		end)
+
+		RunService.Stepped:Connect(function(t, dt)
+			for _, entry in Registry.queryLifecycleHandlers("onPhysics") do
+				task.spawn(entry.singleton[entry.method], entry.singleton, t, dt)
+			end
+		end)
+
+		if not isServer then
+			RunService.RenderStepped:Connect(function(dt)
+				for _, entry in Registry.queryLifecycleHandlers("onRender") do
+					task.spawn(entry.singleton[entry.method], entry.singleton, dt)
+				end
 			end)
 		end
 

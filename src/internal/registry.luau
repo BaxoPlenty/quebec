@@ -15,7 +15,7 @@ local Registry = {
 	data = (nil :: any) :: InternalData?, -- Workaround for unrelated types. Please forgive me
 }
 
-function Registry.initialize()
+function Registry.initialize(instanceCount: number)
 	if not shared.__QuebecInternalData then
 		shared.__QuebecInternalData = {
 			singletons = {},
@@ -31,7 +31,7 @@ function Registry.initialize()
 		Registry.data = shared.__QuebecInternalData
 	end
 
-	Registry.data.instanceCount += 1
+	Registry.data.instanceCount = instanceCount
 end
 
 function Registry.addSingleton<T>(singleton: Types.AsInternalSingleton<T>)
@@ -44,7 +44,7 @@ function Registry.addSingleton<T>(singleton: Types.AsInternalSingleton<T>)
 			local t = Registry.data.lifecycleHandlers[lifecycle]
 
 			if not t then
-				Registry.data.lifecycleHandlers[v] = { { method = method, singleton = singleton } }
+				Registry.data.lifecycleHandlers[lifecycle] = { { method = method, singleton = singleton } }
 			else
 				table.insert(t, { method = method, singleton = singleton })
 			end
@@ -85,7 +85,7 @@ end
 function Registry.markReady()
 	Registry.data.instancesReady += 1
 
-	if Registry.data.instanceCount == Registry.data.instancesReady then
+	if Registry.data.instanceCount == Registry.data.instancesReady and Registry.data.readyCallback ~= nil then
 		task.spawn(Registry.data.readyCallback)
 	end
 end

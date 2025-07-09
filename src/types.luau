@@ -1,10 +1,14 @@
 -- Configuration
 
-export type FrameworkConfiguration = {}
+export type FrameworkConfiguration = {
+	--- A table defining how many instances are there.
+	--- It's only required if you have more than one instance.
+	instances: { string }?,
+}
 
 -- Singleton
 
-export type Lifecycle = "start" | "stop" | "onTick" | "onStep" | "onPhysics"
+export type Lifecycle = "start" | "stop" | "onTick" | "onPhysics" | "onRender"
 
 --- Type defining a Quebec singleton.
 export type Singleton = {
@@ -12,7 +16,7 @@ export type Singleton = {
 	data: any?,
 
 	--- Optional lifecycle definitions of thae singleton. These are required if you want to use a lifecycle.
-	lifecycles: { [Lifecycle | number]: Lifecycle | string }?,
+	lifecycles: { [string | number]: string }?,
 
 	--- Optional method used to do early setup when nothing is running.
 	init: ((self: Singleton) -> unknown)?,
