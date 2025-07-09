@@ -5,7 +5,7 @@ export type FrameworkConfiguration = {
 	--- It's only required if you have more than one instance.
 	instances: { string }?,
 
-	--- Defaults to false in production, but true in Studio. Enabling this will enable debug prints.
+	--- Defaults to false in production, but true in studio. Enabling this will enable debug prints.
 	debug: boolean?,
 
 	--- Defaults to true. Enabling this will enable info prints.
