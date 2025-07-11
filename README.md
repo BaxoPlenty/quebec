@@ -1,6 +1,6 @@
 # Quebec - a modular Roblox game framework
 
-> \*\*This file will be rewritten when Quebec v4.0.0 is released.
+Thank you for checking out this framework! You can find the documentation of it [here](https://baxoplenty.gitbook.io/quebec-docs/)
 
 ## 👾 Rojo Version
 
@@ -10,6 +10,8 @@ This project was built using the [crates.io](https://crates.io/) version of [Roj
 
 The documentation can be found here: https://baxoplenty.gitbook.io/quebec-docs
 
+It contains important information as well as usage, setup and other guides.
+
 ## 🧪 Example Setup
 
 You can find an example setup using Rojo here: https://github.com/BaxoPlenty/quebec-rojo-setup
@@ -18,13 +20,6 @@ It contains 2 branches:
 
 -   `multiplace` - for games having multiple places and shared code
 -   `singleplace` - for games that only have one place
-
-## 📦 Modules
-
-Modules are essentially libraries which you can use inside your singletons as a dependency. There's guides for:
-
--   [Adding modules to a singleton](https://baxoplenty.gitbook.io/quebec-docs/modules/requiring-modules)
--   [A list of built-in modules](https://baxoplenty.gitbook.io/quebec-docs/built-in-modules)
 
 ## ⛰️ Roadmap
 
