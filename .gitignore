@@ -4,8 +4,8 @@
 # Config files
 /.vscode
 
-# Project place file
-/quebec.rbxlx
+# Project file
+/Quebec.rbxm
 
 # Roblox Studio lock files
 /*.rbxlx.lock
