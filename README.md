@@ -1,6 +1,6 @@
 # Quebec - a modular Roblox game framework
 
-Thank you for checking out this framework! You can find the documentation of it [here](https://baxoplenty.gitbook.io/quebec-docs/)
+Thank you for checking out this framework! You can find the documentation of the latest release [here](https://baxoplenty.gitbook.io/quebec-docs/)
 
 ## 👾 Rojo Version
 
@@ -8,7 +8,7 @@ This project was built using the [crates.io](https://crates.io/) version of [Roj
 
 ## 📚 Documentation
 
-The documentation can be found here: https://baxoplenty.gitbook.io/quebec-docs
+The documentation of the latest release can be found here: https://baxoplenty.gitbook.io/quebec-docs
 
 It contains important information as well as usage, setup and other guides.
 
