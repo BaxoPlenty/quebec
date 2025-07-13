@@ -2,6 +2,10 @@
 
 Thank you for checking out this framework! You can find the documentation of the latest release [here](https://baxoplenty.gitbook.io/quebec-docs/)
 
+## 🎧 Discord Server
+
+Seeking quick support or just want to connect? You can join our Discord server here: https://discord.gg/edfQBBz9ch
+
 ## 👾 Rojo Version
 
 This project was built using the [crates.io](https://crates.io/) version of [Rojo 7](https://rojo.space/).
