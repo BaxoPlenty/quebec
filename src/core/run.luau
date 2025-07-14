@@ -19,6 +19,8 @@ return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
 		end
 	end
 
+	Logger.info("running Quebec %s", require(root.version))
+
 	Registry.initialize(if config and config.instances then #config.instances else 1)
 
 	Logger.debug("registry initialized")
