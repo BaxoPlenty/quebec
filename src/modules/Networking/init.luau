@@ -24,7 +24,19 @@ local Networking = {}
 
 local NetworkingFolder = (function()
 	if RunService:IsClient() then
-		return script:WaitForChild(FolderName)
+		local folder = script:WaitForChild(FolderName, 5)
+
+		if not folder then
+			Logger.warn("unable to find networking folder. did you forget to handle the events on the server?")
+			Logger.warn("creating client-sided networking folder")
+
+			folder = Instance.new("Folder")
+
+			folder.Name = FolderName
+			folder.Parent = script
+		end
+
+		return folder
 	else
 		local folder = script:FindFirstChild(FolderName)
 
