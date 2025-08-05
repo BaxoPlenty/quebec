@@ -12,6 +12,23 @@ export type FrameworkConfiguration = {
 	info: boolean?,
 }
 
+-- Custom Lifecycle
+
+export type CustomLifecycleData = {
+	defaultMethod: string,
+}
+
+export type CustomLifecycle<Data> = Data & {
+	getSingletons: (self: CustomLifecycle<Data>) -> { Singleton },
+
+	run: ((self: CustomLifecycle<Data>) -> unknown)?,
+	onSingletonAdded: ((self: CustomLifecycle<Data>, singleton: Singleton) -> unknown)?,
+}
+
+export type InternalLifecycle = CustomLifecycle<CustomLifecycleData & {
+	__singletons: { Singleton },
+}>
+
 -- Singleton
 
 export type Lifecycle = "start" | "stop" | "onTick" | "onPhysics" | "onRender"
