@@ -88,5 +88,11 @@ return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
 		end
 
 		Logger.debug("connected lifecycles")
+
+		for _, custom in Registry.queryCustomLifecycles() do
+			task.spawn(custom.run, custom)
+		end
+
+		Logger.debug("connected custom lifecycles")
 	end)
 end

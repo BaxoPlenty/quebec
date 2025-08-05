@@ -5,6 +5,7 @@ local Types = require(root.types)
 type InternalData = {
 	singletons: { Types.Singleton },
 	lifecycleHandlers: { [Types.Lifecycle]: { { singleton: Types.Singleton, method: string } } },
+	customLifecycles: { Types.InternalLifecycle },
 	instanceCount: number,
 	instancesReady: number,
 	masterAssigned: boolean,
@@ -20,6 +21,7 @@ function Registry.initialize(instanceCount: number)
 		shared.__QuebecInternalData = {
 			singletons = {},
 			lifecycleHandlers = {},
+			customLifecycles = {},
 			instanceCount = 0,
 			instancesReady = 0,
 			masterAssigned = false,
@@ -52,12 +54,20 @@ function Registry.addSingleton<T>(singleton: Types.AsInternalSingleton<T>)
 	end
 end
 
+function Registry.addCustomLifecycle(lifecycle: Types.InternalLifecycle)
+	table.insert(Registry.data.customLifecycles, lifecycle)
+end
+
 function Registry.queryAll(): { Types.Singleton }
 	return Registry.data.singletons
 end
 
 function Registry.queryLifecycleHandlers(lifecycle: Types.Lifecycle): { { method: string, singleton: Types.Singleton } }
 	return Registry.data.lifecycleHandlers[lifecycle] or {}
+end
+
+function Registry.queryCustomLifecycles(): { Types.InternalLifecycle }
+	return Registry.data.customLifecycles
 end
 
 function Registry.assignMaster(): boolean

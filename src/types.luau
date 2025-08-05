@@ -15,18 +15,29 @@ export type FrameworkConfiguration = {
 -- Custom Lifecycle
 
 export type CustomLifecycleData = {
+	--- The default method name of the lifecycle.
 	defaultMethod: string,
 }
 
 export type CustomLifecycle<Data> = Data & {
-	getSingletons: (self: CustomLifecycle<Data>) -> { Singleton },
+	--- Returns a list of all singleton entries that have attached to this lifecycle.
+	getSingletons: (self: CustomLifecycle<Data>) -> { { singleton: Singleton, fn: string } },
+
+	--- Invokes the current lifecycle on all registered singletons in a new thread with the provided arguments.
+	invokeAll: (self: CustomLifecycle<Data>, ...any) -> (),
+
+	--- Invokes the current lifecycle on all registered singletons with the provided arguments.
+	---
+	--- Note: This function will yield, because it does not utilize `task.spawn` like `invokeAll` does.
+	invokeAllSameThread: (self: CustomLifecycle<Data>, ...any) -> (),
 
 	run: ((self: CustomLifecycle<Data>) -> unknown)?,
 	onSingletonAdded: ((self: CustomLifecycle<Data>, singleton: Singleton) -> unknown)?,
 }
 
 export type InternalLifecycle = CustomLifecycle<CustomLifecycleData & {
-	__singletons: { Singleton },
+	__singletons: { { singleton: Singleton, fn: string } },
+	__registered: boolean?,
 }>
 
 -- Singleton
