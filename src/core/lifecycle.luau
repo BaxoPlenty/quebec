@@ -26,12 +26,14 @@ return function<T>(data: T & Types.CustomLifecycleData): T
 		Logger.critical("a lifecycle is missing the `defaultMethod` field!")
 	end
 
-	data.__type = "Quebec.Lifecycle"
-	data.__singletons = {}
+	local dataCopy = (data :: any) :: Types.InternalLifecycle
 
-	data.getSingletons = getSingletons
-	data.invokeAll = invokeAll
-	data.invokeAllSameThread = invokeAllSameThread
+	dataCopy.__type = "Quebec.Lifecycle"
+	dataCopy.__singletons = {}
 
-	return data
+	dataCopy.getSingletons = getSingletons
+	dataCopy.invokeAll = invokeAll
+	dataCopy.invokeAllSameThread = invokeAllSameThread
+
+	return dataCopy :: T
 end

@@ -4,8 +4,8 @@ local Types = require(root.types)
 local Registry = require(root.internal.registry)
 
 local function getCustomLifecycle(k, v): (boolean, Types.InternalLifecycle?, string?)
-	local lifecycle = nil :: Types.InternalLifecycle
-	local methodName = nil :: string
+	local lifecycle = nil :: Types.InternalLifecycle?
+	local methodName = nil :: string?
 
 	if typeof(k) == "table" and k.__type == "Quebec.Lifecycle" then
 		lifecycle = k
@@ -26,22 +26,24 @@ return function<T>(singleton: Types.AsSingleton<T>): T
 
 	Registry.addSingleton(internal)
 
-	for k, v in internal.lifecycles do
-		local isCustom, lifecycle, methodName = getCustomLifecycle(k, v)
-		
-		if not isCustom then
-			continue
-		end
+	if internal.lifecycles then
+		for k, v in internal.lifecycles do
+			local isCustom, lifecycle, methodName = getCustomLifecycle(k, v)
 
-		table.insert(lifecycle.__singletons, {
-			singleton = singleton,
-			fn = methodName,
-		})
+			if not isCustom then
+				continue
+			end
 
-		if not lifecycle.__registered then
-			lifecycle.__registered = true
+			table.insert(lifecycle.__singletons, {
+				singleton = singleton,
+				fn = methodName,
+			})
 
-			Registry.addCustomLifecycle(lifecycle)
+			if not lifecycle.__registered then
+				lifecycle.__registered = true
+
+				Registry.addCustomLifecycle(lifecycle)
+			end
 		end
 	end
 
