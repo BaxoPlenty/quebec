@@ -60,11 +60,11 @@ Singletons can act on various game events by registering handlers for [lifecycle
 
 ### ⚡ Lifecycle Events
 
-Lifecycle events are used to connect [singletons](#-services--controllers) to **events** such as:
+Lifecycle events are used to connect [singletons](#-services--controllers-singletons) to **events** such as:
 
 -   the start/stop of a singleton
 -   game loops via `RunService`
--   [custom lifecycle events]() created with `Quebec.lifecycle`
+-   [custom lifecycle events](https://baxoplenty.gitbook.io/quebec-docs/guides/modding) created with `Quebec.lifecycle`
 
 ### 🌐 Built-in Networking Module
 
