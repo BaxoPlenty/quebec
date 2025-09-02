@@ -91,28 +91,20 @@ Another goal is to have a great integration with the **LuaU type system** for **
 
 </details>
 
-<br/>
-
 <details>
 <summary><kbd>Janitor</kbd></summary>
 
 </details>
-
-<br/>
 
 <details>
 <summary><kbd>Signal</kbd></summary>
 
 </details>
 
-<br/>
-
 <details>
 <summary><kbd>Channel</kbd></summary>
 
 </details>
-
-<br/>
 
 <details>
 <summary><kbd>Quebec.util.class</kbd></summary>
