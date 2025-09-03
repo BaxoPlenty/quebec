@@ -8,6 +8,28 @@ local Registry = require(root.internal.registry)
 
 local isServer = RunService:IsServer()
 
+local function collectSingletonModules(parent: Instance): { ModuleScript }
+	local collected = {}
+
+	local function query(instance: Instance)
+		for _, v in instance:GetChildren() do
+			if v:HasTag("QuebecIgnore") then
+				continue
+			end
+
+			if v:IsA("ModuleScript") then
+				table.insert(collected, v)
+			elseif v:IsA("Folder") then
+				query(v)
+			end
+		end
+	end
+
+	query(parent)
+
+	return collected
+end
+
 return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
 	if config then
 		if config.debug ~= nil then
@@ -26,10 +48,8 @@ return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
 	Logger.debug("registry initialized")
 
 	-- Requiring all the singletons once for them to register via Quebec.singleton
-	for _, instance in singletonFolder:GetChildren() do
-		if instance:IsA("ModuleScript") then
-			require(instance)
-		end
+	for _, instance in collectSingletonModules(singletonFolder) do
+		require(instance)
 	end
 
 	Registry.markReady()
