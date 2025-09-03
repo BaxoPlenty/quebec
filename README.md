@@ -4,7 +4,7 @@
 
 <br/>
 
-# Quebec
+<h1>Quebec</h1>
 
 An **open-source, flexible** Roblox game framework.<br/>
 Easily integrate game logic using **services & controllers**.<br/>
@@ -22,17 +22,16 @@ Provides multiple **opt-in modules and utilities** for a seamless dev experience
 <details>
 <summary><kbd>Table of contents</kbd></summary>
 
-- [Quebec](#quebec)
-  - [👋 Getting Started](#-getting-started)
-  - [✨ Features](#-features)
-    - [📁 Services \& Controllers (Singletons)](#-services--controllers-singletons)
-    - [⚡ Lifecycle Events](#-lifecycle-events)
-    - [🌐 Built-in Networking Module](#-built-in-networking-module)
-    - [📦 OOP-style Classes](#-oop-style-classes)
-    - [🧠 Typed By Default](#-typed-by-default)
-  - [📜 List Of Modules \& Utility Functions](#-list-of-modules--utility-functions)
-  - [🤝 Contributions](#-contributions)
-  - [📚 Installation \& Other Information](#-installation--other-information)
+- [👋 Getting Started](#-getting-started)
+- [✨ Features](#-features)
+  - [📁 Services \& Controllers (Singletons)](#-services--controllers-singletons)
+  - [⚡ Lifecycle Events](#-lifecycle-events)
+  - [🌐 Built-in Networking Module](#-built-in-networking-module)
+  - [📦 OOP-style Classes](#-oop-style-classes)
+  - [🧠 Typed By Default](#-typed-by-default)
+- [📜 List Of Modules \& Utility Functions](#-list-of-modules--utility-functions)
+- [🤝 Contributions](#-contributions)
+- [📚 Installation \& Other Information](#-installation--other-information)
 
 </details>
 
