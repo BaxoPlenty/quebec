@@ -1,6 +1,7 @@
 local FolderName = "__QBC_EV"
 
 local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
 
 local Logger = require(script.Parent.Parent.internal.logger)
 
@@ -74,6 +75,10 @@ function Networking.event(name: string): UntypedEvent
 	return event(instance) :: UntypedEvent
 end
 
+function Networking.anonymousEvent(): UntypedEvent
+	return Networking.event(HttpService:GenerateGUID())
+end
+
 function Networking.func(name: string): UntypedFunc
 	local instance = nil
 
@@ -95,6 +100,10 @@ function Networking.func(name: string): UntypedFunc
 	end
 
 	return func(instance) :: UntypedFunc
+end
+
+function Networking.anonymousFunc(): UntypedFunc
+	return Networking.func(HttpService:GenerateGUID())
 end
 
 return Networking
