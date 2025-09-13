@@ -1,3 +1,5 @@
+--!strict
+
 local FolderName = "__QBC_EV"
 
 local RunService = game:GetService("RunService")
@@ -8,17 +10,22 @@ local Logger = require(script.Parent.Parent.internal.logger)
 local event = require(script.event)
 local eventTypes = require(script.event.types)
 
+local unreliable = require(script.unreliable)
+local unreliableTypes = require(script.unreliable.types)
+
 local func = require(script.func)
 local funcTypes = require(script.func.types)
 
 -- Re-export some types for quick access
 
 export type Event<Args...> = eventTypes.Event<Args...>
+export type Unreliable<Args...> = unreliableTypes.Unreliable<Args...>
 export type Func<Args..., Returns...> = funcTypes.Func<Args..., Returns...>
 
 -- Custom types
 
 export type UntypedEvent = Event<...any>
+export type UntypedUnreliable = Unreliable<...any>
 export type UntypedFunc = Func<...any, ...any>
 
 local Networking = {}
@@ -48,7 +55,7 @@ local NetworkingFolder = (function()
 			folder.Parent = script
 		end
 
-		return folder
+		return folder :: Folder
 	end
 end)() :: Folder
 
@@ -72,11 +79,38 @@ function Networking.event(name: string): UntypedEvent
 		Logger.critical("unable to setup event %q, instance not created nor found", name)
 	end
 
-	return event(instance) :: UntypedEvent
+	return event(instance :: RemoteEvent) :: UntypedEvent
 end
 
 function Networking.anonymousEvent(): UntypedEvent
 	return Networking.event(HttpService:GenerateGUID())
+end
+
+function Networking.unreliable(name: string): UntypedUnreliable
+	local instance = nil
+
+	if RunService:IsClient() then
+		instance = NetworkingFolder:WaitForChild(name)
+	else
+		instance = NetworkingFolder:FindFirstChild(name)
+
+		if not instance then
+			instance = Instance.new("UnreliableRemoteEvent")
+
+			instance.Name = name
+			instance.Parent = NetworkingFolder
+		end
+	end
+
+	if not instance then
+		Logger.critical("unable to setup unreliable %q, instance not created nor found", name)
+	end
+
+	return unreliable(instance :: UnreliableRemoteEvent) :: UntypedUnreliable
+end
+
+function Networking.anonymousUnreliable(): UntypedUnreliable
+	return Networking.unreliable(HttpService:GenerateGUID())
 end
 
 function Networking.func(name: string): UntypedFunc
@@ -99,7 +133,7 @@ function Networking.func(name: string): UntypedFunc
 		Logger.critical("unable to setup function %q, instance not created nor found", name)
 	end
 
-	return func(instance) :: UntypedFunc
+	return func(instance :: RemoteFunction) :: UntypedFunc
 end
 
 function Networking.anonymousFunc(): UntypedFunc
