@@ -1,3 +1,5 @@
+--!strict
+
 export type BaseFunc = {
 	instance: RemoteFunction,
 }

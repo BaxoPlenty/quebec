@@ -1,1 +1,3 @@
+--!strict
+
 return "v5.0.0"

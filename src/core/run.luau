@@ -1,3 +1,5 @@
+--!strict
+
 local RunService = game:GetService("RunService")
 
 local root = script.Parent.Parent
@@ -47,9 +49,12 @@ return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
 
 	Logger.debug("registry initialized")
 
+	-- I would get luau-lsp errors otherwise...
+	local proxy_require = require
+
 	-- Requiring all the singletons once for them to register via Quebec.singleton
 	for _, instance in collectSingletonModules(singletonFolder) do
-		require(instance)
+		proxy_require(instance)
 	end
 
 	Registry.markReady()
@@ -110,6 +115,12 @@ return function(singletonFolder: Folder, config: Types.FrameworkConfiguration?)
 		Logger.debug("connected lifecycles")
 
 		for _, custom in Registry.queryCustomLifecycles() do
+			if not custom.run then
+				Logger.warn("a custom lifecycle does not implement the run function. undefined behavior may occur")
+
+				continue
+			end
+
 			task.spawn(custom.run, custom)
 		end
 

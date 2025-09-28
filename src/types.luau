@@ -1,3 +1,5 @@
+--!strict
+
 -- Configuration
 
 export type FrameworkConfiguration = {
@@ -36,6 +38,7 @@ export type CustomLifecycle<Data> = Data & {
 }
 
 export type InternalLifecycle = CustomLifecycle<CustomLifecycleData & {
+	__type: string?,
 	__singletons: { { singleton: Singleton, fn: string } },
 	__registered: boolean?,
 }>
@@ -54,6 +57,8 @@ export type Singleton = {
 
 	--- Optional method used to do early setup when nothing is running.
 	init: ((self: Singleton) -> unknown)?,
+
+	[any]: any,
 }
 
 --- Type reserved for internal fields.

@@ -1,3 +1,5 @@
+--!strict
+
 local RunService = game:GetService("RunService")
 local ServerStorage = game:GetService("ServerStorage")
 local HttpService = game:GetService("HttpService")
@@ -33,14 +35,14 @@ function Signal.new<Args...>(name: string): Signal<Args...>
 
 	local instance = Folder:FindFirstChild(name)
 
-	if not instance then
+	if not instance or not instance:IsA("BindableEvent") then
 		instance = Instance.new("BindableEvent")
 
 		instance.Name = name
 		instance.Parent = Folder
 	end
 
-	self.instance = instance
+	self.instance = instance :: BindableEvent
 
 	return self
 end

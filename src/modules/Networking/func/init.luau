@@ -1,3 +1,5 @@
+--!strict
+
 local types = require(script.types)
 
 local FuncMethods = {}

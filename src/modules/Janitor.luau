@@ -1,3 +1,5 @@
+--!strict
+
 local Logger = require(script.Parent.Parent.internal.logger)
 
 export type Janitor = {

@@ -1,3 +1,5 @@
+--!strict
+
 export type BaseEvent = {
 	instance: RemoteEvent,
 }

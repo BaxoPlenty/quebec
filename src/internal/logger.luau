@@ -1,3 +1,5 @@
+--!strict
+
 local RunService = game:GetService("RunService")
 
 local Levels = {
@@ -15,8 +17,8 @@ local Logger = {
 	enableInfo = true,
 }
 
-function Logger.log(level: string, func, fmt: string, ...)
-	func(`[ quebec {level} - {Platform} ] {string.format(fmt, ...)}`)
+function Logger.log(level: string, func: (any) -> any, fmt: string, ...)
+	func(`[ quebec {level} - {Platform} ] {string.format(fmt :: any, ...)}`)
 end
 
 function Logger.info(fmt: string, ...)

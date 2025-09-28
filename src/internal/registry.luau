@@ -1,10 +1,13 @@
+--!strict
+
 local root = script.Parent.Parent
 
 local Types = require(root.types)
+local Logger = require(root.internal.logger)
 
 type InternalData = {
 	singletons: { Types.Singleton },
-	lifecycleHandlers: { [Types.Lifecycle]: { { singleton: Types.Singleton, method: string } } },
+	lifecycleHandlers: { [string]: { { singleton: Types.Singleton, method: string } } },
 	customLifecycles: { Types.InternalLifecycle },
 	instanceCount: number,
 	instancesReady: number,
@@ -12,8 +15,24 @@ type InternalData = {
 	readyCallback: (() -> unknown)?,
 }
 
+--[[local Registry = {
+	data = (nil :: any) :: InternalData?,
+}]]
+
 local Registry = {
-	data = (nil :: any) :: InternalData?, -- Workaround for unrelated types. Please forgive me
+	data = nil,
+} :: {
+	data: InternalData?,
+
+	initialize: (instanceCount: number) -> (),
+	addSingleton: <T>(singleton: Types.AsInternalSingleton<T>) -> (),
+	addCustomLifecycle: (lifecycle: Types.InternalLifecycle) -> (),
+	queryAll: () -> { Types.Singleton },
+	queryLifecycleHandlers: (lifecycle: Types.Lifecycle) -> { { method: string, singleton: Types.Singleton } },
+	queryCustomLifecycles: () -> { Types.InternalLifecycle },
+	assignMaster: () -> boolean,
+	onAllReady: (cb: (...any) -> any) -> (),
+	markReady: () -> (),
 }
 
 function Registry.initialize(instanceCount: number)
@@ -30,13 +49,23 @@ function Registry.initialize(instanceCount: number)
 	end
 
 	if not Registry.data then
-		Registry.data = shared.__QuebecInternalData
+		Registry.data = shared.__QuebecInternalData :: any
+	end
+
+	if not Registry.data then
+		Logger.critical("unable to setup internal data")
+
+		return
 	end
 
 	Registry.data.instanceCount = instanceCount
 end
 
 function Registry.addSingleton<T>(singleton: Types.AsInternalSingleton<T>)
+	if not Registry.data then
+		return
+	end
+
 	table.insert(Registry.data.singletons, singleton)
 
 	if singleton.lifecycles then
@@ -48,30 +77,46 @@ function Registry.addSingleton<T>(singleton: Types.AsInternalSingleton<T>)
 			if not t then
 				Registry.data.lifecycleHandlers[lifecycle] = { { method = method, singleton = singleton } }
 			else
-				table.insert(t, { method = method, singleton = singleton })
+				table.insert(t, { method = method, singleton = singleton :: Types.Singleton })
 			end
 		end
 	end
 end
 
 function Registry.addCustomLifecycle(lifecycle: Types.InternalLifecycle)
+	if not Registry.data then
+		return
+	end
+
 	table.insert(Registry.data.customLifecycles, lifecycle)
 end
 
 function Registry.queryAll(): { Types.Singleton }
+	if not Registry.data then
+		return {}
+	end
+
 	return Registry.data.singletons
 end
 
 function Registry.queryLifecycleHandlers(lifecycle: Types.Lifecycle): { { method: string, singleton: Types.Singleton } }
+	if not Registry.data then
+		return {}
+	end
+
 	return Registry.data.lifecycleHandlers[lifecycle] or {}
 end
 
 function Registry.queryCustomLifecycles(): { Types.InternalLifecycle }
+	if not Registry.data then
+		return {}
+	end
+
 	return Registry.data.customLifecycles
 end
 
 function Registry.assignMaster(): boolean
-	if not Registry.data.masterAssigned then
+	if Registry.data and not Registry.data.masterAssigned then
 		Registry.data.masterAssigned = true
 
 		return true
@@ -81,6 +126,10 @@ function Registry.assignMaster(): boolean
 end
 
 function Registry.onAllReady(cb)
+	if not Registry.data then
+		return
+	end
+
 	if Registry.data.readyCallback ~= nil then
 		return
 	end
@@ -93,6 +142,10 @@ function Registry.onAllReady(cb)
 end
 
 function Registry.markReady()
+	if not Registry.data then
+		return
+	end
+
 	Registry.data.instancesReady += 1
 
 	if Registry.data.instanceCount == Registry.data.instancesReady and Registry.data.readyCallback ~= nil then

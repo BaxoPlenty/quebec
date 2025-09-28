@@ -1,21 +1,23 @@
+--!strict
+
 local root = script.Parent.Parent
 
 local Types = require(root.types)
 local Registry = require(root.internal.registry)
 
-local function getCustomLifecycle(k, v): (boolean, Types.InternalLifecycle?, string?)
+local function getCustomLifecycle(k: any, v: any): (boolean, Types.InternalLifecycle?, string?)
 	local lifecycle = nil :: Types.InternalLifecycle?
 	local methodName = nil :: string?
 
 	if typeof(k) == "table" and k.__type == "Quebec.Lifecycle" then
-		lifecycle = k
+		lifecycle = k :: Types.InternalLifecycle
 		methodName = v
 	elseif typeof(v) == "table" and v.__type == "Quebec.Lifecycle" then
 		lifecycle = v :: Types.InternalLifecycle
 
 		methodName = lifecycle.defaultMethod
 	else
-		return false
+		return false, nil, nil
 	end
 
 	return true, lifecycle, methodName
@@ -30,7 +32,7 @@ return function<T>(singleton: Types.AsSingleton<T>): T
 		for k, v in internal.lifecycles do
 			local isCustom, lifecycle, methodName = getCustomLifecycle(k, v)
 
-			if not isCustom then
+			if not isCustom or not lifecycle or not methodName then
 				continue
 			end
 

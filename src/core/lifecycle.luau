@@ -1,3 +1,5 @@
+--!strict
+
 local Types = require(script.Parent.Parent.types)
 local Logger = require(script.Parent.Parent.internal.logger)
 

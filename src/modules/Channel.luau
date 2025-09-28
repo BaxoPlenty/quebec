@@ -1,3 +1,5 @@
+--!strict
+
 local RunService = game:GetService("RunService")
 local ServerStorage = game:GetService("ServerStorage")
 local HttpService = game:GetService("HttpService")
@@ -29,18 +31,18 @@ local Channel = {}
 Channel.__index = Channel
 
 function Channel.new<Args..., Returns...>(name: string): Channel<Args..., Returns...>
-	local self = (setmetatable({}, Channel) :: any) :: Channel<Args...>
+	local self = (setmetatable({}, Channel) :: any) :: Channel<Args..., Returns...>
 
 	local instance = Folder:FindFirstChild(name)
 
-	if not instance then
+	if not instance or not instance:IsA("BindableFunction") then
 		instance = Instance.new("BindableFunction")
 
 		instance.Name = name
 		instance.Parent = Folder
 	end
 
-	self.instance = instance
+	self.instance = instance :: BindableFunction
 
 	return self
 end

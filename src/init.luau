@@ -1,3 +1,5 @@
+--!strict
+
 -- Re-exported types
 
 local Types = require(script.types)

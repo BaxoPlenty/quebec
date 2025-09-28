@@ -1,3 +1,5 @@
+--!strict
+
 type Constructor<T, A...> = (self: T, A...) -> ()
 type Class<T, P, A...> = P & { new: (A...) -> T & P }
 
