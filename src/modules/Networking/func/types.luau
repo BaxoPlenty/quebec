@@ -2,19 +2,21 @@ export type BaseFunc = {
 	instance: RemoteFunction,
 }
 
-export type Func<Args..., Returns...> = BaseFunc & {
-	client: (self: Func<Args..., Returns...>) -> ClientExecutor<Args..., Returns...>,
-	server: (self: Func<Args..., Returns...>) -> ServerExecutor<Args..., Returns...>,
+export type Func<Args..., Returns...> = FuncTwoWay<Args..., Returns..., Args..., Returns...>
+
+export type FuncTwoWay<SArgs..., SReturns..., CArgs..., CReturns...> = BaseFunc & {
+	client: (self: any) -> ClientExecutor<CArgs..., CReturns...>,
+	server: (self: any) -> ServerExecutor<SArgs..., SReturns...>,
 }
 
-export type ClientExecutor<Args..., Returns...> = BaseFunc & {
-	invoke: (self: ClientExecutor<Args..., Returns...>, Args...) -> Returns...,
-	connect: (self: ClientExecutor<Args..., Returns...>, callback: (Args...) -> Returns...) -> (),
+export type ClientExecutor<CArgs..., CReturns...> = BaseFunc & {
+	invoke: (self: ClientExecutor<CArgs..., CReturns...>, CArgs...) -> CReturns...,
+	connect: (self: ClientExecutor<CArgs..., CReturns...>, callback: (CArgs...) -> CReturns...) -> (),
 }
 
-export type ServerExecutor<Args..., Returns...> = BaseFunc & {
-	invoke: (self: ServerExecutor<Args..., Returns...>, player: Player, Args...) -> Returns...,
-	connect: (self: ServerExecutor<Args..., Returns...>, callback: (player: Player, Args...) -> Returns...) -> (),
+export type ServerExecutor<SArgs..., SReturns...> = BaseFunc & {
+	invoke: (self: ServerExecutor<SArgs..., SReturns...>, player: Player, SArgs...) -> SReturns...,
+	connect: (self: ServerExecutor<SArgs..., SReturns...>, callback: (player: Player, SArgs...) -> SReturns...) -> (),
 }
 
 return {}
